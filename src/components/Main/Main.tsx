@@ -12,7 +12,6 @@ const MainContainer = styled.main`
 `;
 
 export const Main = (): JSX.Element => {
-
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch({

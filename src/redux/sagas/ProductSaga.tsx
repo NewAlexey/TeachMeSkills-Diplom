@@ -6,7 +6,6 @@ function* getProduct(): any {
   try {
     const response = yield fetch('https://fakestoreapi.com/products');
     const products = yield response.json();
-    console.log(products);
 
     yield put({
       type: ACTIONS_PRODUCTS.GET_PRODUCTS_SUCCESS,

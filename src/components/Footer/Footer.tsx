@@ -35,7 +35,7 @@ const LogoTeachMeSkills = styled.img`
 `;
 
 const Text = styled.p`
-  color: black;
+  color: #ffffff;
 `;
 
 const Link = styled.a`

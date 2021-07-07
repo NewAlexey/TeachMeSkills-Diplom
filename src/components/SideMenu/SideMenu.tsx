@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons';
 
 import './style.scss';
-import { Category } from './Categories';
-import getID from '../../../utils/get-random-id';
-import { mainColor } from '../../../utils/colors';
-import { ACTIONS_APP, IStore } from '../../../redux/constants';
+import { Category } from '../Header/Categories';
+import getID from '../../utils/get-random-id';
+import { mainColor } from '../../utils/colors';
+import { ACTIONS_APP, IStore } from '../../redux/constants';
 
 interface ISideMenuContainer {
   isFreezeSideMenu: boolean;
@@ -18,7 +18,7 @@ const SideMenuContainer = styled.nav<ISideMenuContainer>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 10%;
+  width: 175px;
   height: 100%;
   position: fixed;
   left: -150px;
@@ -56,11 +56,11 @@ export const SideMenu = (): JSX.Element => {
   const dispatch = useDispatch();
   const categories = useSelector((store: IStore) => store.categoriesReducer.categories);
   const isFreezeSideMenu = useSelector((store: IStore) => store.appReducer.isFreezeSideMenu);
+  const currentCategory = useSelector((store: IStore) => store.appReducer.currentCategory);
 
   const freezeSideMenu = (): void => {
     dispatch({ type: ACTIONS_APP.FREEZE_SIDE_MENU });
   };
-
 
   return (
     <>
@@ -74,7 +74,7 @@ export const SideMenu = (): JSX.Element => {
         </LockContainer>
         <CategoriesContainer>
           {categories.map((elem) => {
-            return <Category key={getID()} catName={elem} />;
+            return <Category key={getID()} catName={elem} selectCategory={currentCategory} isHeader={false} />;
           })}
         </CategoriesContainer>
       </SideMenuContainer>

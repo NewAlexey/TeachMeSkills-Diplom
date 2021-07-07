@@ -7,6 +7,7 @@ import { faCartPlus, faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 import './style.scss';
 import { ACTIONS_APP, IStore } from '../../../redux/constants';
 import { useEffect } from 'react';
+import { IProducts } from '../../../utils/interfaces';
 
 const CardContainer = styled.div`
   width: fit-content;
@@ -68,37 +69,33 @@ const Price = styled.p`
 `;
 
 interface IMainCard {
-  category: string;
-  title: string;
-  imgSrc: string;
-  price: number;
-  id: number;
+  product: IProducts;
 }
 
-export const Product: React.FC<IMainCard> = ({ category, title, imgSrc, price, id }): JSX.Element => {
+export const Product: React.FC<IMainCard> = ({ product }): JSX.Element => {
   const dispatch = useDispatch();
   const [isIdInBasket, setIsIdInBasker] = useState(false);
-  const listIdInBasker = useSelector((store: IStore) => store.appReducer.idProductsInBasket);
+  const listProductInBasket = useSelector((store: IStore) => store.appReducer.productsInBasket);
 
   useEffect(() => {
-    const isProductInBasket = listIdInBasker.some((elem) => elem === id);
+    const isProductInBasket = listProductInBasket.some((elem) => elem.id === product.id);
     setIsIdInBasker(isProductInBasket);
-  }, [listIdInBasker]);
+  }, [listProductInBasket, product.id]);
 
-  const addProductToBasker = (): void => {
-    const addedId = id;
+  const addProductToBasket = (): void => {
+    const addSelectedProduct = product;
     dispatch({
       type: ACTIONS_APP.ADD_PRODUCT,
-      addedId,
+      addSelectedProduct,
     });
     setIsIdInBasker(true);
   };
 
   const removeProductFromBasker = (): void => {
-    const deletedId = id;
+    const deleteSelectedProduct = product.id;
     dispatch({
       type: ACTIONS_APP.DELETE_PRODUCT,
-      deletedId,
+      deleteSelectedProduct,
     });
     setIsIdInBasker(false);
   };
@@ -107,23 +104,23 @@ export const Product: React.FC<IMainCard> = ({ category, title, imgSrc, price, i
     <>
       <CardContainer>
         <ImgContainer>
-          <Img src={imgSrc} />
+          <Img src={product.image} />
         </ImgContainer>
-        <Title>{title}</Title>
+        <Title>{product.title}</Title>
         <CategoryContainer>
-          Category: <Category>{category}</Category>
+          Category: <Category>{product.category}</Category>
         </CategoryContainer>
         <ContainerBuying>
-          <Price>${price}</Price>
+          <Price>${product.price}</Price>
           <FontAwesomeIcon
             icon={faMinusSquare}
-            className={isIdInBasket ? 'faCartMinus' : 'faCartMinusInBasker'}
+            className={isIdInBasket ? 'faCartMinus' : 'faCartMinusInBasket'}
             onClick={removeProductFromBasker}
           />
           <FontAwesomeIcon
             icon={faCartPlus}
             className={!isIdInBasket ? 'faShoppingTruck' : 'faShoppingTruckInBasket'}
-            onClick={addProductToBasker}
+            onClick={addProductToBasket}
           />
         </ContainerBuying>
       </CardContainer>

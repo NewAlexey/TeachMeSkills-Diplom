@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome } from '@fortawesome/free-solid-svg-icons';
+import { faLongArrowAltDown, faLongArrowAltUp } from '@fortawesome/free-solid-svg-icons';
 import { CSSProperties } from 'react';
 
 import { IStore } from '../../redux/constants';
 import { IProducts } from '../../utils/interfaces';
 import { Product } from '../Main/MainContent/Product';
+import { mainColor } from '../../utils/colors';
 
 const ProductsCategoryContainer = styled.section`
+  position: relative;
   width: 80%;
   background-color: #ffffff;
   margin: 0 auto;
@@ -19,16 +21,34 @@ const ProductsCategoryContainer = styled.section`
   margin: 100px auto 100px auto;
   border-radius: 50px;
   box-shadow: 0px 0px 15px 15px #ffffff;
+  justify-content: space-evenly;
 `;
 
-const HomeStyle = {
-  position: 'fixed',
-  fontSize: '40px',
-  color: '#8d33da',
-  top: '1%',
-  left: '11%',
+const SortArrowUp = {
+  position: 'absolute',
+  fontSize: '20px',
+  color: `${mainColor}`,
+  top: '10px',
+  left: '13%',
   cursor: 'pointer',
 } as CSSProperties;
+
+const SortArrowDown = {
+  position: 'absolute',
+  fontSize: '20px',
+  color: `${mainColor}`,
+  top: '10px',
+  left: '15%',
+  cursor: 'pointer',
+} as CSSProperties;
+
+const SortText = styled.p`
+  position: absolute;
+  font-size: 16px;
+  color: ${mainColor};
+  top: 12px;
+  left: 4%;
+`;
 
 interface IUseParams {
   category: string;
@@ -36,34 +56,22 @@ interface IUseParams {
 
 export const Category: React.FC = () => {
   const { category } = useParams<IUseParams>();
-  const history = useHistory();
   const allProducts = useSelector((store: IStore) => store.productReducer.products);
   const [productInCategory, setProductInCategory] = useState<IProducts[]>([]);
 
   useEffect(() => {
     const filteredProducts = allProducts.filter((elem) => elem.category === category);
     setProductInCategory(filteredProducts);
-  }, [category]);
-
-  const goMainPage = (): void => {
-    history.push('/main');
-  };
+  }, [category, allProducts]);
 
   return (
     <>
       <ProductsCategoryContainer>
-        <FontAwesomeIcon icon={faHome} style={HomeStyle} onClick={goMainPage} />
+        <SortText> Sort by price </SortText>
+        <FontAwesomeIcon icon={faLongArrowAltUp} style={SortArrowUp} />
+        <FontAwesomeIcon icon={faLongArrowAltDown} style={SortArrowDown} />
         {productInCategory.map((elem) => {
-          return (
-            <Product
-              key={elem.id}
-              category={elem.category}
-              title={elem.title}
-              imgSrc={elem.image}
-              price={elem.price}
-              id={elem.id}
-            />
-          );
+          return <Product key={elem.id} product={elem} />;
         })}
       </ProductsCategoryContainer>
     </>

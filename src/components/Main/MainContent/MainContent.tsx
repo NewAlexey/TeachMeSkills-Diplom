@@ -9,11 +9,12 @@ import { Product } from './Product';
 
 const ContentContainer = styled.section`
   width: 80%;
+  min-height: 600px;
   background-color: white;
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-evenly;
   border-radius: 50px 50px 0 0;
   box-shadow: 0px 0px 15px 15px #ffffff;
   position: relative;
@@ -69,16 +70,7 @@ export const MainContent: React.FC = () => {
         <ButtonGetRandom onClick={getNewRandomProducts}>I'm Feeling Lucky</ButtonGetRandom>
         {randomIndexes.length !== 0
           ? randomProducts.map((elem) => {
-              return (
-                <Product
-                  key={elem.id}
-                  category={elem.category}
-                  title={elem.title}
-                  imgSrc={elem.image}
-                  price={elem.price}
-                  id={elem.id}
-                />
-              );
+              return <Product key={elem.id} product={elem} />;
             })
           : null}
       </ContentContainer>
