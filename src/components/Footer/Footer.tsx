@@ -3,9 +3,8 @@ import styled from 'styled-components';
 import { mainColor } from '../../utils/colors';
 
 const FooterContaier = styled.footer`
-  width: 80%;
+  width: 100%;
   height: 50px;
-  position: fixed;
   bottom: 0px;
   margin: 0 auto;
   box-shadow: 0px 3px 10px 5px #535252;

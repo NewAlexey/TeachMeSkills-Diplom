@@ -8,7 +8,7 @@ import { Carousel } from './Carousel/Carousel';
 import { MainContent } from './MainContent';
 
 const MainContainer = styled.main`
-  margin: 70px auto;
+  margin: 100px auto 70px;
 `;
 
 export const Main = (): JSX.Element => {

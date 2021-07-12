@@ -1,14 +1,15 @@
-import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons';
 
 import './style.scss';
-import { Category } from '../Header/Categories';
+import { Category } from '../Header/HeaderUser/Category';
 import getID from '../../utils/get-random-id';
 import { mainColor } from '../../utils/colors';
 import { ACTIONS_APP, IStore } from '../../redux/constants';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 interface ISideMenuContainer {
   isFreezeSideMenu: boolean;
@@ -52,11 +53,24 @@ const CategoriesContainer = styled.div`
 `;
 
 export const SideMenu = (): JSX.Element => {
-  const refSideMenu = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
+  const [scroll, setScroll] = useState(0);
   const categories = useSelector((store: IStore) => store.categoriesReducer.categories);
   const isFreezeSideMenu = useSelector((store: IStore) => store.appReducer.isFreezeSideMenu);
   const currentCategory = useSelector((store: IStore) => store.appReducer.currentCategory);
+  const isAdminLogin = useSelector((store: IStore) => store.loginReducer.isAdminLogin);
+
+  useEffect(() => {
+    const handleScroll = (): void => {
+      if (isFreezeSideMenu) {
+        return;
+      } else {
+        setScroll(window.scrollY);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.addEventListener('scroll', handleScroll);
+  }, [isFreezeSideMenu]);
 
   const freezeSideMenu = (): void => {
     dispatch({ type: ACTIONS_APP.FREEZE_SIDE_MENU });
@@ -64,20 +78,22 @@ export const SideMenu = (): JSX.Element => {
 
   return (
     <>
-      <SideMenuContainer ref={refSideMenu} isFreezeSideMenu={isFreezeSideMenu}>
-        <LockContainer onClick={freezeSideMenu}>
-          {isFreezeSideMenu ? (
-            <FontAwesomeIcon icon={faLock} className="faLock" />
-          ) : (
-            <FontAwesomeIcon icon={faLockOpen} className="faLock" />
-          )}
-        </LockContainer>
-        <CategoriesContainer>
-          {categories.map((elem) => {
-            return <Category key={getID()} catName={elem} selectCategory={currentCategory} isHeader={false} />;
-          })}
-        </CategoriesContainer>
-      </SideMenuContainer>
+      {scroll > 100 && !isAdminLogin && (
+        <SideMenuContainer isFreezeSideMenu={isFreezeSideMenu}>
+          <LockContainer onClick={freezeSideMenu}>
+            {isFreezeSideMenu ? (
+              <FontAwesomeIcon icon={faLock} className="faLock" />
+            ) : (
+              <FontAwesomeIcon icon={faLockOpen} className="faLock" />
+            )}
+          </LockContainer>
+          <CategoriesContainer>
+            {categories.map((elem) => {
+              return <Category key={getID()} catName={elem} selectCategory={currentCategory} isHeader={false} />;
+            })}
+          </CategoriesContainer>
+        </SideMenuContainer>
+      )}
     </>
   );
 };

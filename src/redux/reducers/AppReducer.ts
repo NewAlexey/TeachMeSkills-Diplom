@@ -1,8 +1,9 @@
 import { discounts } from '../../utils/discounts';
-import { IProducts, IProductsBasket, IUserInfo } from '../../utils/interfaces';
+import { IProducts, IProductsBasket, IUserInfo, IUserOrder } from '../../utils/interfaces';
 import { ACTIONS_APP } from '../constants';
 
 export interface IAppReducer {
+  error: string;
   orderTotalMoney: string;
   isFreezeSideMenu: boolean;
   isOpenModalOrder: boolean;
@@ -11,12 +12,15 @@ export interface IAppReducer {
   currentDiscount: number;
   productsInBasket: IProductsBasket[];
   listDicsountCode: Map<string, number>;
-  orderError: string,
-  orderStatus: string,
+  orderError: string;
+  orderStatus: string;
+  isAdminLogin: boolean;
+  userOrders: IUserOrder[];
 }
 
 export interface IActionInterface {
   type: string;
+  error: string;
   orderTotalMoney: string;
   isFreezeSideMenu: boolean;
   isOpenModalOrder: boolean;
@@ -28,11 +32,15 @@ export interface IActionInterface {
   productsInBasket: IProductsBasket[];
   idChangedProduct: number;
   userInfo: IUserInfo;
-  orderError: string,
-  orderStatus: string,
+  userEmail: string;
+  userOrders: IUserOrder[];
+  orderError: string;
+  orderStatus: string;
+  isAdminLogin: boolean;
 }
 
 const defaultState: IAppReducer = {
+  error: '',
   orderTotalMoney: '',
   isFreezeSideMenu: false,
   isOpenModalOrder: false,
@@ -43,6 +51,8 @@ const defaultState: IAppReducer = {
   productsInBasket: [],
   orderError: '',
   orderStatus: '',
+  isAdminLogin: false,
+  userOrders: [],
 };
 
 export function appReducer(state = defaultState, action: IActionInterface): IAppReducer {
@@ -104,6 +114,17 @@ export function appReducer(state = defaultState, action: IActionInterface): IApp
     }
     case ACTIONS_APP.SEND_INFO_TG_FAILURE: {
       return { ...state, orderError: action.orderError };
+    }
+    case ACTIONS_APP.GET_USER_ORDERS_SUCCESS: {
+      return { ...state, userOrders: [...action.userOrders] };
+    }
+    case ACTIONS_APP.GET_USER_ORDERS_FAILURE: {
+      return { ...state, error: action.error };
+    }
+    case ACTIONS_APP.LOGOUT_USER: {
+      const newArr = state.userOrders;
+      newArr.length = 0;
+      return { ...state, userOrders: [...newArr] };
     }
     default:
       return state;

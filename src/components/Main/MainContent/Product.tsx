@@ -8,6 +8,7 @@ import './style.scss';
 import { ACTIONS_APP, IStore } from '../../../redux/constants';
 import { useEffect } from 'react';
 import { IProducts } from '../../../utils/interfaces';
+import { ModalProductView } from '../../Modal';
 
 const CardContainer = styled.div`
   width: fit-content;
@@ -55,6 +56,7 @@ const Img = styled.img`
   object-fit: contain;
   width: 100%;
   max-height: 270px;
+  cursor: pointer;
 `;
 
 const ContainerBuying = styled.div`
@@ -74,6 +76,7 @@ interface IMainCard {
 
 export const Product: React.FC<IMainCard> = ({ product }): JSX.Element => {
   const dispatch = useDispatch();
+  const [isOpenModalProductView, setIsOpenModalProductView] = useState(false);
   const [isIdInBasket, setIsIdInBasker] = useState(false);
   const listProductInBasket = useSelector((store: IStore) => store.appReducer.productsInBasket);
 
@@ -91,6 +94,10 @@ export const Product: React.FC<IMainCard> = ({ product }): JSX.Element => {
     setIsIdInBasker(true);
   };
 
+  const openModalProductView = (): void => {
+    setIsOpenModalProductView(true);
+  };
+
   const removeProductFromBasker = (): void => {
     const deleteSelectedProduct = product.id;
     dispatch({
@@ -100,11 +107,23 @@ export const Product: React.FC<IMainCard> = ({ product }): JSX.Element => {
     setIsIdInBasker(false);
   };
 
+  const closeModalView = (): void => {
+    setIsOpenModalProductView(false);
+  };
+
   return (
     <>
+      {isOpenModalProductView && (
+        <ModalProductView
+          closeModalView={closeModalView}
+          imgSrc={product.image}
+          title={product.title}
+          description={product.description}
+        />
+      )}
       <CardContainer>
         <ImgContainer>
-          <Img src={product.image} />
+          <Img src={product.image} onClick={openModalProductView} />
         </ImgContainer>
         <Title>{product.title}</Title>
         <CategoryContainer>

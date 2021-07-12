@@ -30,7 +30,6 @@ function* sendInfoTg(action: IActionInterface): any {
       orderStatus,
     });
   } catch (error) {
-    console.log(error.message);
     yield put({
       type: ACTIONS_APP.SEND_INFO_TG_FAILURE,
       orderError: error.message,

@@ -6,7 +6,6 @@ import { IStore, ACTIONS_APP } from '../../../redux/constants';
 import { backgroundColor, mainColor } from '../../../utils/colors';
 
 const StickyContainer = styled.div`
-  position: sticky;
   top: 70px;
   z-index: 5;
 `;
@@ -15,7 +14,7 @@ const TotalInformationContainer = styled.div`
   height: 150px;
   border: 1px solid black;
   margin: 0 auto;
-  width: 50%;
+  width: 80%;
   display: flex;
   border-radius: 20px;
   background-color: ${backgroundColor};
@@ -104,7 +103,7 @@ export const BasketInformation = (): JSX.Element => {
   const listDicsountCode = useSelector((store: IStore) => store.appReducer.listDicsountCode);
   const productsInBasket = useSelector((store: IStore) => store.appReducer.productsInBasket);
   const currentAppliedDiscount = useSelector((store: IStore) => store.appReducer.currentDiscount);
-  const orderTotalMoney = useSelector((store: IStore) => store.appReducer.orderTotalMoney);
+  // const orderTotalMoney = useSelector((store: IStore) => store.appReducer.orderTotalMoney);
 
   useEffect(() => {
     const totalPrice = productsInBasket
@@ -170,28 +169,30 @@ export const BasketInformation = (): JSX.Element => {
       <BasketHeader>
         {productsInBasket.length !== 0 ? 'Your Shopping Cart' : 'Your Shopping Cart is Empty yet ;)'}
       </BasketHeader>
-      <TotalInformationContainer>
-        <DiscountContainer>
-          <DiscountText>Enter code for discount</DiscountText>
-          <DiscrountInput onChange={inputDiscountCode} value={discountInput} />
-          <DiscountButton onClick={checkDiscountCode}> Get Discount</DiscountButton>
-        </DiscountContainer>
-        <PriceAndOrderContainer>
-          <PriceContainer>
-            <PriceInfo>Price: </PriceInfo>
-            <Price>${counfOfMoneyWithoutDiscount}</Price>
-          </PriceContainer>
-          <PriceContainer>
-            <PriceInfo>Your discount: </PriceInfo>
-            <Discount>{currentAppliedDiscount * 100}%</Discount>
-          </PriceContainer>
-          <PriceContainer>
-            <PriceInfo>Total: </PriceInfo>
-            <Price>${currentAppliedDiscount ? countOfMoney : counfOfMoneyWithoutDiscount}</Price>
-          </PriceContainer>
-          <GetOrderButton onClick={openModalOrder}>Click For Order</GetOrderButton>
-        </PriceAndOrderContainer>
-      </TotalInformationContainer>
+      {productsInBasket.length !== 0 && (
+        <TotalInformationContainer>
+          <DiscountContainer>
+            <DiscountText>Enter code for discount</DiscountText>
+            <DiscrountInput onChange={inputDiscountCode} value={discountInput} />
+            <DiscountButton onClick={checkDiscountCode}> Get Discount</DiscountButton>
+          </DiscountContainer>
+          <PriceAndOrderContainer>
+            <PriceContainer>
+              <PriceInfo>Price: </PriceInfo>
+              <Price>${counfOfMoneyWithoutDiscount}</Price>
+            </PriceContainer>
+            <PriceContainer>
+              <PriceInfo>Your discount: </PriceInfo>
+              <Discount>{currentAppliedDiscount * 100}%</Discount>
+            </PriceContainer>
+            <PriceContainer>
+              <PriceInfo>Total: </PriceInfo>
+              <Price>${currentAppliedDiscount ? countOfMoney : counfOfMoneyWithoutDiscount}</Price>
+            </PriceContainer>
+            <GetOrderButton onClick={openModalOrder}>Click For Order</GetOrderButton>
+          </PriceAndOrderContainer>
+        </TotalInformationContainer>
+      )}
     </StickyContainer>
   );
 };

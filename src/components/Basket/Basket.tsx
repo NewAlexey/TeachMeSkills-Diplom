@@ -8,6 +8,7 @@ import { ProductInBasket } from './ProductBasket';
 
 const BasketContainer = styled.section`
   width: 80%;
+  min-height: calc(100vh - 300px);
   background-color: ${backgroundColor};
   margin: 150px auto 100px auto;
   position: relative;
@@ -25,12 +26,14 @@ export const Basket = (): JSX.Element => {
   return (
     <>
       <BasketContainer>
-        <BasketInformation />
         <ProductContainer>
-          {productsInBasket.length !== 0 ? productsInBasket.map((elem) => {
-            return <ProductInBasket key={elem.id} product={elem} />
-          }) : null}
+          {productsInBasket.length !== 0
+            ? productsInBasket.map((elem) => {
+                return <ProductInBasket key={elem.id} product={elem} />;
+              })
+            : null}
         </ProductContainer>
+        <BasketInformation />
       </BasketContainer>
     </>
   );

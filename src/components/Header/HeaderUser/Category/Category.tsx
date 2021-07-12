@@ -4,8 +4,8 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { ACTIONS_APP } from '../../../redux/constants';
-import { mainColor } from '../../../utils/colors';
+import { ACTIONS_APP } from '../../../../redux/constants';
+import { mainColor } from '../../../../utils/colors';
 
 const CategoriesSideMenu = styled.div`
   height: 100%;
@@ -71,6 +71,9 @@ export const Category: React.FC<ICategory> = ({ catName, selectCategory, isHeade
 
   useEffect(() => {
     selectCategory === catName ? setIsCurrentCategory(true) : setIsCurrentCategory(false);
+    return () => {
+      setIsCurrentCategory(false);
+    };
   }, [selectCategory, catName]);
 
   const goToCategory = (): void => {

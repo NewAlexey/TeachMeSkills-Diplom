@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { ACTIONS_APP, IStore } from '../../redux/constants';
 import { getDate } from '../../utils/get-date';
-import { IFilteredProduct, IUserInfo } from '../../utils/interfaces';
+import { IFilteredProduct, IUserInfo, IUserOrder } from '../../utils/interfaces';
 import { checkEmail } from '../../utils/validate-email-order';
 import { checkNameLength, checkNameLetters } from '../../utils/validate-name-order';
 import { checkPhone, checkPhoneSymbols } from '../../utils/validate-phone-order';
@@ -113,10 +113,13 @@ const ButtonSubmit = styled.button<IButtonSubmit>`
 export const ModalOrder: React.FC = () => {
   const productsInBasket = useSelector((store: IStore) => store.appReducer.productsInBasket);
   const orderTotalMoney = useSelector((store: IStore) => store.appReducer.orderTotalMoney);
-  const orderStatus = useSelector((store: IStore) => store.appReducer.orderStatus);
-  const orderError = useSelector((store: IStore) => store.appReducer.orderError);
-  const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+  const textOrderStatus = useSelector((store: IStore) => store.appReducer.orderStatus);
+  const textOrderError = useSelector((store: IStore) => store.appReducer.orderError);
+  const useFullName = useSelector((store: IStore) => store.loginReducer.userFullName);
+  const emailOfUser = useSelector((store: IStore) => store.loginReducer.userEmail);
+  const isUserLogin = useSelector((store: IStore) => store.loginReducer.isUserLogin);
+  const [userName, setUserName] = useState(useFullName);
+  const [userEmail, setUserEmail] = useState(emailOfUser);
   const [userPhone, setUserPhone] = useState('');
   const [isValidName, setIsValidName] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(false);
@@ -129,25 +132,30 @@ export const ModalOrder: React.FC = () => {
     });
   };
 
-  // useEffect(() => {
-  //   if (orderStatus) {
-  //     alert(`Status: ${orderStatus}. I see your order in Telegramm and write.`);
-  //     dispatch({
-  //       type: ACTIONS_APP.IS_OPEN_MODAL_ORDER,
-  //     });
-  //   }
-  // }, [orderStatus]);
+  useEffect(() => {
+    if (textOrderStatus) {
+      alert(`Thanks. We'll see your order in Telegramm and write.`);
+      dispatch({
+        type: ACTIONS_APP.IS_OPEN_MODAL_ORDER,
+      });
+      dispatch({
+        type: ACTIONS_APP.CLEAR_BASKET,
+      });
+    } else if (textOrderError) {
+      alert(`Something going wrong...`);
+    }
 
-  // useEffect(() => {
-  //   if (orderError) {
-  //     alert(`Something wrong...${orderError}`);
-  //     dispatch({
-  //       type: ACTIONS_APP.IS_OPEN_MODAL_ORDER,
-  //     });
-  //   }
-  // }, [orderError]);
+    return () => {
+      const orderStatus = '';
+      const orderError = '';
+      dispatch({ type: ACTIONS_APP.SEND_INFO_TG_SUCCESS, orderStatus });
+      dispatch({ type: ACTIONS_APP.SEND_INFO_TG_FAILURE, orderError });
+    };
+  }, [textOrderStatus, textOrderError]);
 
   useEffect(() => {
+    checkNameLength(userName) ? setIsValidName(true) : setIsValidName(false);
+    checkEmail(userEmail) ? setIsValidEmail(true) : setIsValidEmail(false);
     isValidName && isValidPhone && isValidEmail && setIsAllInputsValid(true);
   }, [isValidName, isValidPhone, isValidEmail]);
 
@@ -166,10 +174,12 @@ export const ModalOrder: React.FC = () => {
   const changeUserPhone = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value as string;
     const isValidSymbolPhone = checkPhoneSymbols(value);
+
     if (!isValidSymbolPhone) {
       setUserPhone(value.slice(0, value.length - 1));
       return;
     }
+
     if (value.length <= 12) {
       setUserPhone(value);
       const isPhoneValid = checkPhone(value);
@@ -189,6 +199,21 @@ export const ModalOrder: React.FC = () => {
         return filteredElem;
       });
       const date = getDate();
+
+      if (isUserLogin) {
+        const userOrders: IUserOrder = {
+          email: userEmail,
+          phone: userPhone,
+          order: filteredProduct,
+          totalMoney: `$${orderTotalMoney}`,
+          date: date,
+        };
+        dispatch({
+          type: ACTIONS_APP.CREATE_ORDER_ON_SERVER,
+          userOrders,
+        });
+      }
+
       const userInfo: IUserInfo = {
         name: userName,
         email: userEmail,
@@ -197,15 +222,10 @@ export const ModalOrder: React.FC = () => {
         totalMoney: `$${orderTotalMoney}`,
         date: date,
       };
+
       dispatch({
         type: ACTIONS_APP.SEND_INFO_TG_REQUEST,
         userInfo,
-      });
-      dispatch({
-        type: ACTIONS_APP.IS_OPEN_MODAL_ORDER,
-      });
-      dispatch({
-        type: ACTIONS_APP.CLEAR_BASKET,
       });
     }
   };

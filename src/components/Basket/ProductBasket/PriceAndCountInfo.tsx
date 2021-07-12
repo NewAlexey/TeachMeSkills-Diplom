@@ -66,7 +66,8 @@ export const PriceAndCountInfo: React.FC<IPriceAndCountInfo> = ({ product }): JS
   const minusProduct = (): void => {
     if (countProduct > 1) {
       const newCount = countProduct - 1;
-      setTotalPriceForProduct(newCount * product.price);
+      const totalPrice = (newCount * product.price).toFixed(2);
+      setTotalPriceForProduct(+totalPrice);
       setCountProduct(newCount);
       const idChangedProduct = product.id;
       dispatch({
@@ -78,7 +79,8 @@ export const PriceAndCountInfo: React.FC<IPriceAndCountInfo> = ({ product }): JS
 
   const plusProduct = (): void => {
     const newCount = countProduct + 1;
-    setTotalPriceForProduct(newCount * product.price);
+    const totalPrice = (newCount * product.price).toFixed(2);
+    setTotalPriceForProduct(+totalPrice);
     setCountProduct(newCount);
     const idChangedProduct = product.id;
     dispatch({
