@@ -1,0 +1,50 @@
+.faShoppingTruck {
+  font-size: 24px;
+  color: #5acc58;
+  cursor: pointer;
+  position: absolute;
+  right: 0px;
+  transition: transform 0.1s ease-in;
+}
+
+.faShoppingTruck:hover {
+  transform: scale(1.2);
+}
+
+.faShoppingTruck:active {
+  color: green;
+  transform: scale(2);
+}
+
+.faShoppingTruckInBasket {
+  @extend .faShoppingTruck;
+  color: #757575;
+  transition: all 1s ease-out;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.faCartMinus {
+  font-size: 24px;
+  color: #f35555;
+  cursor: pointer;
+  position: absolute;
+  right: 18%;
+}
+
+.faCartMinus:hover {
+  transform: scale(1.2);
+}
+
+.faCartMinus:active {
+  color: red;
+  transform: scale(2);
+}
+
+.faCartMinusInBasket {
+  @extend .faCartMinus;
+  color: #757575;
+  transition: all 1s ease;
+  pointer-events: none;
+  opacity: 0.3;
+}
