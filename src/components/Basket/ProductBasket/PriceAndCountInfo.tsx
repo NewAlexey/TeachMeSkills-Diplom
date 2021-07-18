@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { ACTIONS_APP } from '../../../redux/constants';
 
+import { ACTIONS_APP } from '../../../redux/constants';
 import { IProductsBasket } from '../../../utils/interfaces';
 
 interface IPriceAndCountInfo {

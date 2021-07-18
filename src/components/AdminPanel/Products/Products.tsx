@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+
 import { ACTIONS_ADMIN_DATA, IStore } from '../../../redux/constants';
 import { IProducts } from '../../../utils/interfaces';
 import { ProductsList } from './ProductsList';

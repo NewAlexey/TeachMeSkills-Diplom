@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
+
 import { IStore } from '../redux/constants';
 import { AdminPanel } from './AdminPanel';
 import { Products } from './AdminPanel/Products/Products';
+import { CurrentUser } from './AdminPanel/Users';
 import { Users } from './AdminPanel/Users/Users';
 import { Basket } from './Basket';
 import { Category } from './Category';
@@ -26,7 +28,12 @@ export const AppRouter = (): JSX.Element => {
         <Route exact path="/basket">
           <Basket />
         </Route>
-        {isAdminLogin && (
+        {isUserLogin && (
+          <Route path="/orders">
+            <UserOrder />
+          </Route>
+        )}
+        {isAdminLogin ? (
           <>
             <Route exact path="/admin-panel">
               <AdminPanel />
@@ -34,15 +41,15 @@ export const AppRouter = (): JSX.Element => {
             <Route exact path="/admin-panel/users">
               <Users />
             </Route>
+            <Route exact path="/admin-panel/users/:userEmail">
+              <CurrentUser />
+            </Route>
             <Route exact path="/admin-panel/products">
               <Products />
             </Route>
           </>
-        )}
-        {isUserLogin && (
-          <Route path="/orders">
-            <UserOrder />
-          </Route>
+        ) : (
+          <Redirect to="/main" />
         )}
       </Switch>
     </>

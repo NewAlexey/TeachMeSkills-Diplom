@@ -1,7 +1,7 @@
 import styled from 'styled-components';
+
 import { mainColor } from '../../../utils/colors';
 import { IUserOrder } from '../../../utils/interfaces';
-import { ProductItem } from './ProductItem';
 
 const OrderItemContainer = styled.div`
   width: 100%;
@@ -10,7 +10,7 @@ const OrderItemContainer = styled.div`
   border-radius: 40px;
   display: flex;
   align-items: center;
-  margin: 50px 0;
+  margin: 50px 0 0;
 `;
 
 const InfoContainer = styled.div`
@@ -39,6 +39,31 @@ const OrderHeader = styled.h2`
   color: ${mainColor};
 `;
 
+const ProductItemContainer = styled.div`
+  width: 100%;
+  margin: 15px 0;
+  text-align: left;
+  background-color: #c4c4c4;
+  border-radius: 0 20px 20px 0;
+`;
+
+const Information = styled.p`
+  font-size: 20px;
+  font-weight: 600;
+`;
+
+const Title = styled.span`
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0 10px;
+`;
+
+const Count = styled(Title)`
+  margin: 7px 10px;
+`;
+
+const Price = styled(Title)``;
+
 interface IOrderItem {
   orderItem: IUserOrder;
 }
@@ -53,7 +78,22 @@ export const OrderItem: React.FC<IOrderItem> = ({ orderItem }): JSX.Element => {
       <OrderContent>
         <OrderHeader>Order Products</OrderHeader>
         {orderItem.order.map((product) => {
-          return <ProductItem key={product.id} title={product.title} count={product.count} />;
+          return (
+            <ProductItemContainer>
+              <Information>
+                Product:
+                <Title>{product.title}</Title>
+              </Information>
+              <Information>
+                Price:
+                <Price> ${product.price}</Price>
+              </Information>
+              <Information>
+                Count:
+                <Count> {product.count}</Count>
+              </Information>
+            </ProductItemContainer>
+          );
         })}
       </OrderContent>
     </OrderItemContainer>

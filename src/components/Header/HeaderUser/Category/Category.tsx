@@ -18,7 +18,7 @@ const CategoriesSideMenu = styled.div`
   transition: all 0.5s ease-out;
   align-items: center;
   margin: 20px 0;
-  padding: 20px 50px;
+  padding: 13px 30px;
   text-align: center;
   &:hover {
     background: linear-gradient(90deg, rgba(141, 51, 218, 1) 0%, rgba(53, 0, 212, 1) 100%);
@@ -43,7 +43,7 @@ const CategoriesHeader = styled.div`
   transition: all 0.5s ease-out;
   border-radius: 0 0 50px 50px;
   text-align: center;
-  color: ${mainColor};
+  color: black;
   box-shadow: 0px 3px 10px 5px rgba(53, 0, 212, 0.3);
   &:hover {
     background-color: ${mainColor};

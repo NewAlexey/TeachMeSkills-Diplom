@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useRef } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -9,7 +10,7 @@ import { IExistUserLoginInfo } from '../../../utils/interfaces';
 
 const ContentContainer = styled.div`
   position: relative;
-  width: 20%;
+  width: 300px;
   height: 250px;
   padding-bottom: 30px;
   display: flex;
@@ -37,7 +38,7 @@ const InputLoginInfo = styled.input`
 `;
 
 const ButtonContainer = styled.div`
-  width: 20%;
+  width: 300px;
   height: 70px;
   background-color: ${mainColor};
   display: flex;
@@ -91,24 +92,29 @@ export const ModalLoginUser: React.FC<IModalLoginExistUser> = ({ closeModalLogin
   const [email, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
+  const refInput = useRef<HTMLInputElement>(null);
   const errorMessage = useSelector((store: IStore) => store.loginReducer.error);
   const isUserLogin = useSelector((store: IStore) => store.loginReducer.isUserLogin);
 
-  // const pressEnter = (ev: KeyboardEvent): void => {
-  //   if (ev.key === 'Enter') {
-  //     const existUserInfo = { email, password } as IExistUserLoginInfo;
-  //     dispatch({ type: ACTIONS_LOGIN.APP_LOGIN_EXIST_USER, existUserInfo });
-  //   }
-  // };
+  useEffect(() => {
+    (refInput.current as HTMLInputElement).focus();
+  }, []);
 
   useEffect(() => {
-    // window.addEventListener('keydown', pressEnter);
-    return () => {
-      const error = '';
-      dispatch({ type: ACTIONS_LOGIN.APP_LOGIN_FAILURE, error });
-      // window.removeEventListener('keydown', pressEnter);
+    const pressEnter = (ev: KeyboardEvent): void => {
+      if (ev.key === 'Enter') {
+        const existUserInfo = { email, password } as IExistUserLoginInfo;
+        dispatch({ type: ACTIONS_LOGIN.APP_LOGIN_EXIST_USER, existUserInfo });
+      }
     };
-  }, [dispatch]);
+
+    window.addEventListener('keydown', pressEnter);
+    
+    return () => {
+      dispatch({ type: ACTIONS_LOGIN.APP_LOGIN_FAILURE, error: '' });
+      window.removeEventListener('keydown', pressEnter);
+    };
+  }, [dispatch, email, password]);
 
   useEffect(() => {
     if (isUserLogin) {
@@ -137,7 +143,7 @@ export const ModalLoginUser: React.FC<IModalLoginExistUser> = ({ closeModalLogin
         <ChangeModalType onClick={changeModalType}> New User </ChangeModalType>
         <Information>Log in </Information>
         <InfoText> Email </InfoText>
-        <InputLoginInfo onChange={inputLoginData} value={email} />
+        <InputLoginInfo onChange={inputLoginData} value={email} ref={refInput} />
         <InfoText> Password </InfoText>
         <InputLoginInfo type="password" onChange={inputPasswordData} value={password} />
       </ContentContainer>

@@ -38,6 +38,7 @@ export interface IFilteredProduct {
   id: number;
   title: string;
   count: number;
+  price: number;
 }
 
 export interface INewUserLoginInfo {
@@ -90,4 +91,19 @@ export interface IExistUserData {
   firstName: string;
   lastName: string;
   orders: IUserOrder[];
+}
+
+export interface IExistUserSortedData {
+  id: number;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  orders: IUserOrder[];
+  ordersCount: number;
+}
+
+export interface IDeletedUser {
+  usersList: IExistUserData[];
+  information: string;
 }

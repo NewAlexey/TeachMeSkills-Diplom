@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { IProducts } from '../../../../utils/interfaces';
 
 const ProductContainer = styled.div`
   width: 100%;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+
 import { ACTIONS_ADMIN_DATA, IStore } from '../../redux/constants';
 import { INewAccAdmin } from '../../utils/interfaces';
 
@@ -101,7 +102,7 @@ export const AdminPanel = (): JSX.Element => {
     dispatch({ type: ACTIONS_ADMIN_DATA.CHANGE_ACCOUNT_DATA_FAILURE, error });
     const changeAccAdminInfo = '';
     dispatch({ type: ACTIONS_ADMIN_DATA.CHANGE_ACCOUNT_DATA_SUCCESS, changeAccAdminInfo });
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (

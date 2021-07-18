@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { ACTIONS_LOGIN, IStore } from '../../../redux/constants';
-import { store } from '../../../redux/store';
 
 import { mainColor } from '../../../utils/colors';
 import { INewUserLoginInfo } from '../../../utils/interfaces';
@@ -11,7 +10,7 @@ import { checkEmail } from '../../../utils/validate-email-order';
 
 const ContentContainer = styled.div`
   position: relative;
-  width: 20%;
+  width: 300px;
   height: 470px;
   display: flex;
   flex-direction: column;
@@ -38,7 +37,7 @@ const InputLoginInfo = styled.input`
 `;
 
 const ButtonContainer = styled.div`
-  width: 20%;
+  width: 300px;
   height: 70px;
   background-color: ${mainColor};
   display: flex;
@@ -87,8 +86,8 @@ const ErrorMessage = styled.p`
   font-size: 20px;
   color: red;
   position: absolute;
-  bottom: 3%;
-  right: 10%;
+  bottom: 1%;
+  text-align: center;
 `;
 
 const onClickContent = (e: React.MouseEvent<HTMLDivElement>): void => {
@@ -101,43 +100,56 @@ interface IModalLoginExistUser {
 }
 
 export const ModalRegistrationUser: React.FC<IModalLoginExistUser> = ({ closeModalLogin, changeModalType }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [newUserData, setNewUserData] = useState<INewUserLoginInfo>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
   const [isTrueData, setIsTrueData] = useState(false);
   const [isTrueErrorMessage, setIsTrueErrorMessage] = useState(false);
   const dispatch = useDispatch();
   const isUserLogin = useSelector((store: IStore) => store.loginReducer.isUserLogin);
   const errorMessage = useSelector((store: IStore) => store.loginReducer.error);
+  const refInput = useRef<HTMLInputElement>(null);
 
   const loginNewUser = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.stopPropagation();
-    const newUserInfo = { email, password, firstName, lastName } as INewUserLoginInfo;
-    dispatch({ type: ACTIONS_LOGIN.APP_LOGIN_NEW_USER, newUserInfo });
+    dispatch({ type: ACTIONS_LOGIN.APP_LOGIN_NEW_USER, newUserInfo: newUserData });
   };
 
   useEffect(() => {
-    if (isUserLogin) {
-      closeModalLogin()
-    }
-  }, [isUserLogin]);
+    const pressEnter = (ev: KeyboardEvent): void => {
+      if (ev.key === 'Enter') {
+        dispatch({ type: ACTIONS_LOGIN.APP_LOGIN_NEW_USER, newUserInfo: newUserData });
+      }
+    };
+    window.addEventListener('keydown', pressEnter);
+    return () => {
+      dispatch({ type: ACTIONS_LOGIN.APP_LOGIN_FAILURE, error: '' });
+      window.removeEventListener('keydown', pressEnter);
+    };
+  }, [dispatch, newUserData]);
 
   useEffect(() => {
+    if (isUserLogin) {
+      closeModalLogin();
+    }
+  }, [closeModalLogin, isUserLogin]);
+
+  useEffect(() => {
+    (refInput.current as HTMLInputElement).focus();
     return () => {
-      setFirstName('');
-      setLastName('');
-      setEmail('');
-      setPassword('');
+      const emptyUserData = { firstName: '', lastName: '', email: '', password: '' };
+      setNewUserData(emptyUserData);
       setIsTrueData(false);
       setIsTrueErrorMessage(false);
-      const error = '';
       dispatch({
         type: ACTIONS_LOGIN.APP_LOGIN_FAILURE,
-        error,
+        error: '',
       });
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (errorMessage) {
@@ -146,25 +158,18 @@ export const ModalRegistrationUser: React.FC<IModalLoginExistUser> = ({ closeMod
   }, [errorMessage]);
 
   useEffect(() => {
-    if (checkEmail(email) && firstName.length >= 3 && lastName.length >= 3 && password.length >= 5) {
+    if (
+      checkEmail(newUserData.email) &&
+      newUserData.firstName.length >= 3 &&
+      newUserData.lastName.length >= 3 &&
+      newUserData.password.length >= 5
+    ) {
       setIsTrueData(true);
     }
-  }, [firstName, lastName, email, password]);
+  }, [newUserData]);
 
-  const inputFirstNameData = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setFirstName(e.target.value);
-  };
-
-  const inputLastNameData = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setLastName(e.target.value);
-  };
-
-  const inputEmailData = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setEmail(e.target.value);
-  };
-
-  const inputPasswordData = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setPassword(e.target.value);
+  const inputOnChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setNewUserData({ ...newUserData, [event.target.name]: event.target.value });
   };
 
   return (
@@ -173,13 +178,19 @@ export const ModalRegistrationUser: React.FC<IModalLoginExistUser> = ({ closeMod
         <ChangeModalType onClick={changeModalType}> Exist User </ChangeModalType>
         <Information>Sign in</Information>
         <InfoText> First Name </InfoText>
-        <InputLoginInfo onChange={inputFirstNameData} value={firstName} />
+        <InputLoginInfo onChange={inputOnChange} value={newUserData.firstName} ref={refInput} name="firstName" />
         <InfoText> Second Name </InfoText>
-        <InputLoginInfo onChange={inputLastNameData} value={lastName} />
+        <InputLoginInfo onChange={inputOnChange} value={newUserData.lastName} name="lastName" />
         <InfoText> Email </InfoText>
-        <InputLoginInfo onChange={inputEmailData} value={email} placeholder='example@com.by' />
+        <InputLoginInfo onChange={inputOnChange} value={newUserData.email} placeholder="example@com.by" name="email" />
         <InfoText> Password </InfoText>
-        <InputLoginInfo type="password" onChange={inputPasswordData} value={password} placeholder='minimum 5 symbols' />
+        <InputLoginInfo
+          type="password"
+          onChange={inputOnChange}
+          value={newUserData.password}
+          placeholder="minimum 5 symbols"
+          name="password"
+        />
         {isTrueErrorMessage ? <ErrorMessage>{errorMessage}</ErrorMessage> : null}
       </ContentContainer>
       <ButtonContainer onClick={onClickContent}>

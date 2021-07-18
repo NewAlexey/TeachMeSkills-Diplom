@@ -15,7 +15,7 @@ const ContentContainer = styled.section`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  border-radius: 50px 50px 0 0;
+  border-radius: 130px 130px 0 0;
   box-shadow: 0px 0px 15px 15px #ffffff;
   position: relative;
 `;

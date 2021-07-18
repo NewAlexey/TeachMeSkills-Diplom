@@ -5,7 +5,6 @@ import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons
 
 import carouselList from '../../../utils/carousel-list';
 import getID from '../../../utils/get-random-id';
-import { CarouselImg } from './CarouselImg/CarouselImg';
 import { backgroundColor } from '../../../utils/colors';
 
 const SLICE_PX_LETTER = 2;
@@ -16,6 +15,11 @@ const CarouselContainer = styled.section`
   position: static;
   overflow: hidden;
   height: 580px;
+`;
+
+const ImgShop = styled.img`
+  width: 800px;
+  margin: 0 10px;
 `;
 
 const CarouselWrapper = styled.div`
@@ -46,10 +50,13 @@ const sliceLastPxFromValue = (value: string): string => {
 
 const moveCarouselContainerRight = (element: HTMLDivElement): void => {
   let right = element.style.right;
+
   if (+sliceLastPxFromValue(right) >= 3280) {
     element.style.right = '10px';
+
     return;
   }
+
   right = sliceLastPxFromValue(right);
   right = `${+right + 820}px`;
   element.style.right = right;
@@ -57,10 +64,13 @@ const moveCarouselContainerRight = (element: HTMLDivElement): void => {
 
 const moveCarouselContainerLeft = (element: HTMLDivElement): void => {
   let right = element.style.right;
-  if (+sliceLastPxFromValue(right) <= 0) {
-    element.style.right = '3280px';
+
+  if (+sliceLastPxFromValue(right) <= 10) {
+    element.style.right = '3290px';
+
     return;
   }
+
   right = sliceLastPxFromValue(right);
   right = `${+right - 820}px`;
   element.style.right = right;
@@ -85,34 +95,24 @@ export const Carousel = (): JSX.Element => {
     setLeftCoordWrapper(left);
   }, []);
 
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     if (!isClickCarousel) {
-  //       const carousel = refCarouselWrapper.current as HTMLDivElement;
-  //       moveCarouselContainerRight(carousel);
-  //     }
-  //   }, 10000);
-  // }, []);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const carousel = refCarouselWrapper.current as HTMLDivElement;
+      moveCarouselContainerRight(carousel);
+    }, 10000);
+    console.log(intervalId);
 
-  let isClickCarousel = false;
-  let idInterval: NodeJS.Timeout;
-
-  const setIsClickedCarousel = (): void => {
-    clearTimeout(idInterval);
-    isClickCarousel = true;
-    idInterval = setTimeout(() => {
-      isClickCarousel = false;
-    }, 5000);
-  };
+    return (): void => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   const moveCarouselRight = (): void => {
-    setIsClickedCarousel();
     const carousel = refCarouselWrapper.current as HTMLDivElement;
     moveCarouselContainerRight(carousel);
   };
 
   const moveCarouselLeft = (): void => {
-    setIsClickedCarousel();
     const carousel = refCarouselWrapper.current as HTMLDivElement;
     moveCarouselContainerLeft(carousel);
   };
@@ -120,11 +120,10 @@ export const Carousel = (): JSX.Element => {
   return (
     <>
       <CarouselContainer ref={refCarouselContainer}>
-        {/* <ShadowRight /> */}
         <ShadowWrapper style={{ left: `${leftCoordWrapper}` }} />
         <CarouselWrapper ref={refCarouselWrapper} style={{ right: '10px' }}>
           {carouselList.map((elem) => {
-            return <CarouselImg key={getID()} imgUrl={elem} />;
+            return <ImgShop key={getID()} src={elem} />;
           })}
         </CarouselWrapper>
         <ArrowsContainer>

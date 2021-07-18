@@ -2,17 +2,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons';
+import { CSSProperties, useState } from 'react';
+import { useEffect } from 'react';
 
-import './style.scss';
 import { Category } from '../Header/HeaderUser/Category';
 import getID from '../../utils/get-random-id';
 import { mainColor } from '../../utils/colors';
 import { ACTIONS_APP, IStore } from '../../redux/constants';
-import { useState } from 'react';
-import { useEffect } from 'react';
 
 interface ISideMenuContainer {
   isFreezeSideMenu: boolean;
+  scroll: boolean;
 }
 
 const SideMenuContainer = styled.nav<ISideMenuContainer>`
@@ -22,7 +22,7 @@ const SideMenuContainer = styled.nav<ISideMenuContainer>`
   width: 175px;
   height: 100%;
   position: fixed;
-  left: -150px;
+  ${({ scroll }): string => (scroll ? 'left: -150px;' : 'left: -200px;')}
   top: 0px;
   background-color: ${mainColor};
   border-radius: 0 25px 25px 0;
@@ -33,7 +33,7 @@ const SideMenuContainer = styled.nav<ISideMenuContainer>`
       ? `
   &:hover {
     left: 0px;
-    border-radius: 0 150px 150px 0;
+    border-radius: 0 100px 100px 0;
     box-shadow: 5px 0px 25px 5px #535252;
   }`
       : 'left: 0px;'}
@@ -51,6 +51,13 @@ const CategoriesContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+const faLockStyle = {
+  transition: 'color 0.5s ease-in-out',
+  fontSize: '20px',
+  color: 'black',
+  cursor: 'pointer',
+} as CSSProperties;
 
 export const SideMenu = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -78,13 +85,13 @@ export const SideMenu = (): JSX.Element => {
 
   return (
     <>
-      {scroll > 100 && !isAdminLogin && (
-        <SideMenuContainer isFreezeSideMenu={isFreezeSideMenu}>
+      {!isAdminLogin && (
+        <SideMenuContainer isFreezeSideMenu={isFreezeSideMenu} scroll={scroll > 100}>
           <LockContainer onClick={freezeSideMenu}>
             {isFreezeSideMenu ? (
-              <FontAwesomeIcon icon={faLock} className="faLock" />
+              <FontAwesomeIcon icon={faLock} style={faLockStyle} />
             ) : (
-              <FontAwesomeIcon icon={faLockOpen} className="faLock" />
+              <FontAwesomeIcon icon={faLockOpen} style={faLockStyle} />
             )}
           </LockContainer>
           <CategoriesContainer>

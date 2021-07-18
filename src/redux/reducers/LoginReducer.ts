@@ -33,6 +33,7 @@ export function loginReducer(state = defaultState, action: ILoginActionInterface
     case ACTIONS_LOGIN.USER_LOGIN_SUCCESS: {
       const { userFullName } = action.userData;
       const { userEmail } = action.userData;
+      console.log(action);
       return { ...state, userFullName: userFullName, userEmail: userEmail, isUserLogin: true };
     }
     case ACTIONS_LOGIN.ADMIN_LOGIN_SUCCESS: {
@@ -45,7 +46,7 @@ export function loginReducer(state = defaultState, action: ILoginActionInterface
       return { ...state, isAdminLogin: !state.isAdminLogin };
     }
     case ACTIONS_LOGIN.APP_LOGOUT_USER: {
-      return { ...state, isUserLogin: !state.isUserLogin, userEmail: '', userFullName: '' };
+      return { ...state, isUserLogin: false, userEmail: '', userFullName: '' };
     }
     default:
       return state;

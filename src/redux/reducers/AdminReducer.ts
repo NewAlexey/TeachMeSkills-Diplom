@@ -3,6 +3,7 @@ import { ACTIONS_ADMIN_DATA } from '../constants';
 
 export interface IAdminReducer {
   error: string;
+  information: string;
   categoriesList: string[];
   productsList: IProducts[];
   usersList: IExistUserData[];
@@ -13,16 +14,19 @@ export interface IAdminReducer {
 export interface IAdminReducerAction {
   type: string;
   error: string;
+  information: string;
   categoriesList: string[];
   productsList: IProducts[];
   usersList: IExistUserData[];
   newAccAdmin: INewAccAdmin;
   changeAccAdminStatus: boolean;
   changeAccAdminInfo: string;
+  idDeletedUser: string;
 }
 
 const defaultState: IAdminReducer = {
   error: '',
+  information: '',
   categoriesList: [],
   productsList: [],
   usersList: [],
@@ -48,6 +52,12 @@ export function adminReducer(state = defaultState, action: IAdminReducerAction):
       return { ...state, usersList: [...action.usersList] };
     }
     case ACTIONS_ADMIN_DATA.GET_USERS_FAILURE_ADMIN: {
+      return { ...state, error: action.error };
+    }
+    case ACTIONS_ADMIN_DATA.DELETE_USER_SUCCESS: {
+      return { ...state, information: action.information, usersList: [...action.usersList] };
+    }
+    case ACTIONS_ADMIN_DATA.DELETE_USER_FAILURE: {
       return { ...state, error: action.error };
     }
     default:

@@ -13,7 +13,7 @@ import { ModalProductView } from '../../Modal';
 const CardContainer = styled.div`
   width: fit-content;
   height: fit-content;
-  margin: 50px 40px 40px;
+  margin: 20px 10px 0px;
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -86,10 +86,9 @@ export const Product: React.FC<IMainCard> = ({ product }): JSX.Element => {
   }, [listProductInBasket, product.id]);
 
   const addProductToBasket = (): void => {
-    const addSelectedProduct = product;
     dispatch({
       type: ACTIONS_APP.ADD_PRODUCT,
-      addSelectedProduct,
+      addSelectedProduct: product,
     });
     setIsIdInBasker(true);
   };
@@ -99,10 +98,9 @@ export const Product: React.FC<IMainCard> = ({ product }): JSX.Element => {
   };
 
   const removeProductFromBasker = (): void => {
-    const deleteSelectedProduct = product.id;
     dispatch({
       type: ACTIONS_APP.DELETE_PRODUCT,
-      deleteSelectedProduct,
+      deleteSelectedProduct: product.id,
     });
     setIsIdInBasker(false);
   };

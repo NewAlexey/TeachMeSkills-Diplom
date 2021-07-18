@@ -43,37 +43,48 @@ const BasketStyle = {
   position: 'absolute',
   fontSize: '35px',
   color: '#8d33da',
-  top: '45px',
-  right: '7%',
   cursor: 'pointer',
 } as CSSProperties;
+
+const BasketContainer = styled.div`
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  right: 78px;
+  top: 44px;
+`;
 
 const CountProductInBasket = styled.p`
   width: 25px;
   height: 24px;
   position: absolute;
   background-color: white;
-  right: 72px;
-  top: 31px;
+  top: -8px;
+  right: -8px;
   border-radius: 50%;
   text-align: center;
 `;
 
+const UserLoginContainer = styled.div`
+  position: absolute;
+  right: -18px;
+`;
+
 const LoginContainerWithUserName = styled.div`
   width: 200px;
-  height: 35px;
+  height: 45px;
   border-left: 1px solid ${mainColor};
   border-bottom: 1px solid ${mainColor};
   border-right: 1px solid ${mainColor};
   border-radius: 0 0 20px 25px;
   position: absolute;
   font-size: 19px;
-  right: -20%;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #000;
   cursor: default;
+  text-align: center;
   box-shadow: 0px 3px 10px 5px rgb(53 0 212 / 30%);
 `;
 
@@ -81,6 +92,7 @@ const LoginContainer = styled(LoginContainerWithUserName)`
   cursor: pointer;
   color: #000;
   transition: all 0.3s ease-in;
+  right: -220px;
   box-shadow: 0px 3px 10px 5px rgb(53 0 212 / 30%);
   &:hover {
     background-color: ${mainColor};
@@ -97,8 +109,8 @@ const LogoutContainer = styled.div`
   border-radius: 0 0 20px 25px;
   position: absolute;
   font-size: 15px;
-  right: -19%;
-  top: 35px;
+  right: -185px;
+  top: 45px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -113,7 +125,16 @@ const LogoutContainer = styled.div`
 `;
 
 const OrdersContainer = styled(LogoutContainer)`
-  right: -11%;
+  right: -100px;
+`;
+
+const Logo = styled.img`
+  position: absolute;
+  width: 120px;
+  left: -100px;
+  box-shadow: 0px 0px 10px 10px #ffffff;
+  cursor: pointer;
+  border-radius: 0 0 30px 30px;
 `;
 
 export const HeaderUser = (): JSX.Element => {
@@ -136,18 +157,16 @@ export const HeaderUser = (): JSX.Element => {
 
   const goBasketPage = (): void => {
     history.push('/basket');
-    const currentCategory = '';
     dispatch({
       type: ACTIONS_APP.CURRENT_CATEGORY,
-      currentCategory,
+      currentCategory: '',
     });
   };
 
   const goOrdersList = (): void => {
-    const currentCategory = '';
     dispatch({
       type: ACTIONS_APP.CURRENT_CATEGORY,
-      currentCategory,
+      currentCategory: '',
     });
     const userName = userData.split(' ').join('');
     history.push(`/orders/${userName}`);
@@ -168,28 +187,30 @@ export const HeaderUser = (): JSX.Element => {
   };
 
   return (
-    <>
-      <HeaderContaier>
-        {isLoginModalOpen && <ModalLogin closeModalLogin={closeModalLogin} />}
-        <FontAwesomeIcon icon={faHome} style={HomeStyle} onClick={goMainPage} />
+    <HeaderContaier>
+      <Logo src="/logo.png" onClick={goMainPage} />
+      {isLoginModalOpen && <ModalLogin closeModalLogin={closeModalLogin} />}
+      <FontAwesomeIcon icon={faHome} style={HomeStyle} onClick={goMainPage} />
+      <BasketContainer>
         <FontAwesomeIcon icon={faShoppingBasket} style={BasketStyle} onClick={goBasketPage} />
         <CountProductInBasket>{productsInBasket.length}</CountProductInBasket>
-        {userData ? (
-          <>
-            <LoginContainerWithUserName>{userData}</LoginContainerWithUserName>
-            <LogoutContainer onClick={logoutUser}>Logout</LogoutContainer>
-            <OrdersContainer onClick={goOrdersList}>Orders</OrdersContainer>
-          </>
-        ) : (
-          <LoginContainer onClick={openLoginModal}>Login</LoginContainer>
-        )}
+      </BasketContainer>
 
-        <HeaderContent>
-          {categories.map((elem) => {
-            return <Category key={getID()} catName={elem} selectCategory={currentCategory} isHeader={true} />;
-          })}
-        </HeaderContent>
-      </HeaderContaier>
-    </>
+      {userData ? (
+        <UserLoginContainer>
+          <LoginContainerWithUserName>{userData}</LoginContainerWithUserName>
+          <OrdersContainer onClick={goOrdersList}>Orders</OrdersContainer>
+          <LogoutContainer onClick={logoutUser}>Logout</LogoutContainer>
+        </UserLoginContainer>
+      ) : (
+        <LoginContainer onClick={openLoginModal}>Login</LoginContainer>
+      )}
+
+      <HeaderContent>
+        {categories.map((elem) => {
+          return <Category key={getID()} catName={elem} selectCategory={currentCategory} isHeader={true} />;
+        })}
+      </HeaderContent>
+    </HeaderContaier>
   );
 };

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+
 import { ACTIONS_APP, IStore } from '../../redux/constants';
 import { mainColor } from '../../utils/colors';
 import getID from '../../utils/get-random-id';
@@ -11,6 +12,11 @@ const OrderContainer = styled.section`
   margin: 100px auto 70px;
   width: 80%;
   text-align: center;
+`;
+
+const OrdersHeader = styled.h1`
+  color: ${mainColor};
+  font-size: 30px;
 `;
 
 const EmptyOrderText = styled.h1`
@@ -29,6 +35,7 @@ export const UserOrder = (): JSX.Element => {
 
   return (
     <OrderContainer>
+      <OrdersHeader>Order's List</OrdersHeader>
       {userOrders.length > 0 ? (
         userOrders.map((order) => {
           return <OrderItem key={getID()} orderItem={order} />;

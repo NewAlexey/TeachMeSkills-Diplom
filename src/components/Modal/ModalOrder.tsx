@@ -196,6 +196,7 @@ export const ModalOrder: React.FC = () => {
         filteredElem.id = elem.id;
         filteredElem.title = elem.title;
         filteredElem.count = elem.count;
+        filteredElem.price = elem.price;
         return filteredElem;
       });
       const date = getDate();

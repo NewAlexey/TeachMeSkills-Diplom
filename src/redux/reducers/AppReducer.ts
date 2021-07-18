@@ -16,11 +16,13 @@ export interface IAppReducer {
   orderStatus: string;
   isAdminLogin: boolean;
   userOrders: IUserOrder[];
+  information: string;
 }
 
 export interface IActionInterface {
   type: string;
   error: string;
+  information: string;
   orderTotalMoney: string;
   isFreezeSideMenu: boolean;
   isOpenModalOrder: boolean;
@@ -37,10 +39,12 @@ export interface IActionInterface {
   orderError: string;
   orderStatus: string;
   isAdminLogin: boolean;
+  sendMessageAuthor: string;
 }
 
 const defaultState: IAppReducer = {
   error: '',
+  information: '',
   orderTotalMoney: '',
   isFreezeSideMenu: false,
   isOpenModalOrder: false,
@@ -122,9 +126,10 @@ export function appReducer(state = defaultState, action: IActionInterface): IApp
       return { ...state, error: action.error };
     }
     case ACTIONS_APP.LOGOUT_USER: {
-      const newArr = state.userOrders;
-      newArr.length = 0;
-      return { ...state, userOrders: [...newArr] };
+      return { ...state, userOrders: [], currentDiscount: 0 };
+    }
+    case ACTIONS_APP.SEND_MESSAGE_TO_AUTHOR_SUCCESS: {
+      return { ...state, information: action.information };
     }
     default:
       return state;
